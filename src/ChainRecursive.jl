@@ -105,6 +105,12 @@ julia> @chain begin
 ERROR: UndefVarError: _ not defined
 
 julia> @chain begin
+            a += 1
+            _
+       end
+ERROR: UndefVarError: _ not defined
+
+julia> @chain begin
            function test_function(x) 1 end
            _
        end
@@ -113,14 +119,6 @@ ERROR: UndefVarError: _ not defined
 julia> @chain begin
            type cant_chain_types end
            _
-       end
-ERROR: UndefVarError: _ not defined
-
-julia> let a = 1
-           @chain begin
-               a += 1
-               _
-           end
        end
 ERROR: UndefVarError: _ not defined
 ```
@@ -148,7 +146,7 @@ julia> using ChainRecursive
 
 julia> @chain type test_type
            a
-           _
+           b::_
        end
 ERROR: UndefVarError: _ not defined
 ```
