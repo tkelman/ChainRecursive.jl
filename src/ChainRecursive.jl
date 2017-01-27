@@ -10,9 +10,7 @@ end
 
 link(head, tail::Expr) = begin
     wrapped_head = NumberedLines.wrap(head)
-    :(let _ = $wrapped_head
-          $tail
-      end)
+    :(let _ = $wrapped_head; $tail; end)
 end
 
 link(head, tail::NumberedLines.NumberedLine) =
