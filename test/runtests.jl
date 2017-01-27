@@ -1,5 +1,10 @@
 using ChainRecursive
-using Base.Test
+using Documenter
 
-# write your own tests here
-@test 1 == 2
+makedocs(
+    modules = [ChainRecursive],
+    format = :html,
+    sitename = "ChainRecursive.jl",
+    pages = Any["Home" => "index.md"],
+    strict = true
+)
