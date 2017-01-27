@@ -111,7 +111,7 @@ julia> @chain begin
 ERROR: UndefVarError: _ not defined
 
 julia> @chain begin
-           type a end
+           type cant_chain_types end
            _
        end
 ERROR: UndefVarError: _ not defined
