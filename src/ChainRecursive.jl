@@ -3,9 +3,6 @@ module ChainRecursive
 import NumberedLines
 import CreateMacrosFrom
 
-map_expression(f, e) = e
-map_expression(f, e::Expr) = Expr(e.head, map(f, e.args)...)
-
 link(head, tail::Symbol) = begin
     wrapped_head = NumberedLines.wrap(head)
     :( $tail( $wrapped_head) )
@@ -35,7 +32,7 @@ chain_recursive(e) = e
 chain_recursive(e::Expr) = if e.head in unrecurrables
     e
 else
-    recurred = map_expression(chain_recursive, e)
+    recurred = Expr(e.head, map(chain_recursive, e.args)...)
     if recurred.head == :block && !any( is_assignment.(recurred.args) )
         foldl(link, recurred.args) |> NumberedLines.wrap
     else
