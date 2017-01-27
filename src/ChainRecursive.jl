@@ -110,6 +110,12 @@ julia> @chain begin
        end
 ERROR: UndefVarError: _ not defined
 
+julia> @chain begin
+           type a end
+           _
+       end
+ERROR: UndefVarError: _ not defined
+
 julia> let a = 1
            @chain begin
                a += 1
@@ -119,7 +125,7 @@ julia> let a = 1
 ERROR: UndefVarError: _ not defined
 ```
 
-However, assignments and bindings do not prevent recursion.
+However, assignments, bindings, and updates will not prevent recursion.
 
 ```jldoctest
 julia> using ChainRecursive
@@ -136,13 +142,13 @@ julia> @chain begin
  3
 ```
 
-Type definitions will not be recurred into.
+In addition, type definitions will not be recurred into.
 ```jldoctest
 julia> using ChainRecursive
 
 julia> @chain type test_type
            a
-           b::_
+           _
        end
 ERROR: UndefVarError: _ not defined
 ```
