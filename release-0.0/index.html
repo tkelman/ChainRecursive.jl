@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Home · ChainRecursive.jl</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/default.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Ubuntu+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="assets/documenter.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="assets/documenter.js"></script><script src="../versions.js"></script></head><body><nav class="toc"><h1>ChainRecursive.jl</h1><form class="search" action="search.html"><select id="version-selector" onChange="window.location.href=this.value"><option value="#" selected="selected" disabled="disabled">Version</option></select><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li class="current"><a class="toctext" href="index.html">Home</a><ul class="internal"></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href="index.html">Home</a></li></ul><a class="edit-page" href="https://github.com/bramtayl/ChainRecursive.jl/tree/fde9874e20aca2202179e3d2764751b8475e21c3/docs/src/index.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/></header><h1><a class="nav-anchor" id="ChainRecursive.jl-1" href="#ChainRecursive.jl-1">ChainRecursive.jl</a></h1><p>Documentation for ChainRecursive.jl</p><ul><li><a href="index.html#ChainRecursive.chain-Tuple{Any}"><code>ChainRecursive.chain</code></a></li><li><a href="index.html#ChainRecursive.@chain"><code>ChainRecursive.@chain</code></a></li></ul><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="ChainRecursive.chain-Tuple{Any}" href="#ChainRecursive.chain-Tuple{Any}"><code>ChainRecursive.chain</code></a> — <span class="docstring-category">Method</span>.</div><div><pre><code class="language-none">@chain(e)</code></pre><p>Will <code>chain</code> all eligible block in your code, recursively.</p><p>Within each block, lines are reduced with <code>link</code>. <code>link</code> has two behaviors. It will call bare functions on the result of the previous line.</p><pre><code class="language-jlcon">julia&gt; using ChainRecursive
+
+julia&gt; @chain begin
+           1
+           vcat
+        end
+1-element Array{Int64,1}:
+ 1</code></pre><p>It will reinterpret <code>_</code> within expressions as the result of the previous line.</p><pre><code class="language-jlcon">julia&gt; using ChainRecursive
+
+julia&gt; @chain begin
+           1
+           vcat(2, _)
+       end
+2-element Array{Int64,1}:
+ 2
+ 1</code></pre><p>It will recur.</p><pre><code class="language-jlcon">julia&gt; using ChainRecursive
+
+julia&gt; @chain begin
+           1
+           if _ == 1
+               _ + 1
+               vcat(_, 3)
+           end
+       end
+2-element Array{Int64,1}:
+ 2
+ 3</code></pre><p>Cannot chain blocks with assignments, bindings, or updates. They will be skipped. Once you give a name to something, use it! If your chains get too long, I highly recommend breaking them up with descriptive assignments.</p><pre><code class="language-jlcon">julia&gt; using ChainRecursive
+
+julia&gt; @chain begin
+           a = 1
+           _
+       end
+ERROR: UndefVarError: _ not defined
+
+julia&gt; @chain begin
+            a += 1
+            _
+       end
+ERROR: UndefVarError: _ not defined
+
+julia&gt; @chain begin
+           function test_function(x) 1 end
+           _
+       end
+ERROR: UndefVarError: _ not defined
+
+julia&gt; @chain begin
+           type cant_chain_types end
+           _
+       end
+ERROR: UndefVarError: _ not defined</code></pre><p>However, assignments, bindings, and updates will not prevent recursion.</p><pre><code class="language-jlcon">julia&gt; using ChainRecursive
+
+julia&gt; @chain begin
+           a = 1
+           begin
+               a + 1
+               vcat(_, 3)
+           end
+       end
+2-element Array{Int64,1}:
+ 2
+ 3</code></pre><p>In addition, type definitions will not be recurred into.</p><pre><code class="language-jlcon">julia&gt; using ChainRecursive
+
+julia&gt; @chain type test_type
+           a
+           b::_
+       end
+ERROR: UndefVarError: _ not defined</code></pre></div><a class="source-link" target="_blank" href="https://github.com/bramtayl/ChainRecursive.jl/tree/fde9874e20aca2202179e3d2764751b8475e21c3/src/ChainRecursive.jl#L45-L154">source</a><br/></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="ChainRecursive.@chain" href="#ChainRecursive.@chain"><code>ChainRecursive.@chain</code></a> — <span class="docstring-category">Macro</span>.</div><div><p>See documentation of <a href="index.html#ChainRecursive.chain-Tuple{Any}"><code>chain</code></a></p></div><a class="source-link" target="_blank" href="https://github.com/bramtayl/ChainRecursive.jl/tree/fde9874e20aca2202179e3d2764751b8475e21c3/src/ChainRecursive.jl#L157">source</a><br/></section><footer><hr/></footer></article></body></html>
