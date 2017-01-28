@@ -93,7 +93,8 @@ julia> @chain begin
 ```
 
 Cannot chain blocks with assignments, bindings, or updates. They will be
-skipped. Once you give a name to something, use it!
+skipped. Once you give a name to something, use it! If your chains get too long,
+I highly recommend breaking them up with descriptive assignments.
 
 ```jldoctest
 julia> using ChainRecursive
